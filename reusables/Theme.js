@@ -4,7 +4,7 @@ import { ThemeProvider } from 'next-themes'
 
 export default function Theme({ children }) {
   return (
-    <ThemeProvider attribute="class">
+    <ThemeProvider attribute="class" enableSystem={false}>
       {children}
     </ThemeProvider>
   )
