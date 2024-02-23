@@ -1,112 +1,296 @@
+"use client";
+import { TabWithContent } from "@/components/TabWithContent";
+import { useEffect, useState } from "react";
+import turnover from "../assets/turnover.png";
+import capital from "../assets/capital.png";
+import market from "../assets/market.png";
+import scarp from "../assets/scarp.png";
+import stock from "../assets/stock.png";
+import transaction from "../assets/transaction.png";
 import Image from "next/image";
-
+import { TopTabWithContent } from "@/components/TopTabWithContent";
+import LongTab from "@/components/LongTab";
+import StockCharts from "@/components/Charts/StockChart";
 export default function Home() {
+  const [news, setNews] = useState([]);
+  const [summary, setSummary] = useState([]);
+  const [dividend, setDividend] = useState([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          "https://arthakendra.com/api/v1/news/sharehub/stock-news?limit=8"
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch data");
+        }
+        const jsonData = await response.json();
+        setNews(jsonData.data.content);
+      } catch (error) {
+        setError(error.message);
+      }
+    };
+
+    fetchData();
+    fetchDividend();
+  }, []);
+
+  const fetchDividend = async () => {
+    try {
+      const response = await fetch(
+        "https://arthakendra.com/data/api/v1/dividend?size=6&pageSize=6"
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch data");
+      }
+      const jsonData = await response.json();
+      setDividend(jsonData.data.content);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  const images = [turnover, stock, transaction, scarp, capital, market];
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          "https://live.nepsesharehub.com/v1/nepselive/market-summary"
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch data");
+        }
+        const jsonData = await response.json();
+        setSummary(jsonData);
+      } catch (error) {
+        console.log(error.message);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const [currentTime, setCurrentTime] = useState(new Date());
+
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+
+    // Cleanup function to clear interval when component unmounts
+    return () => clearInterval(intervalId);
+  }, []); // Empty dependency array ensures effect runs only once after initial render
+
+  // Format date and time
+  const formattedDateTime = currentTime.toLocaleString("en-US", {
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: true,
+  });
+  const handleScroll = (e) => {
+    console.log(e.target);
+    const bottom =
+      e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
+    if (bottom) {
+      alert("i am bottom");
+    }
+  };
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">app/page.js</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <main>
+      <div className="grid bg-gray-100 dark:bg-slate-900 grid-cols-12 gap-1">
+        <div className="p-3 grid-cols-12 rounded  md:col-span-8 col-span-12">
+          <div className="grid grid-cols-12 gap-3">
+            <div className="p-3 grid-cols-12 rounded bg-white dark:bg-slate-800 col-span-12">
+              <StockCharts />
+            </div>
+            <div className="grid-cols-12 block md:hidden rounded bg-white dark:bg-slate-800 col-span-12">
+              <div className="flex w-full items-center justify-between">
+                <div className="p-3 text-gray-600 dark:text-slate-300 mb-2 font-semibold text-lg">
+                  Summary
+                </div>
+                <div className="text-sm text-gray-400 mr-2 ">
+                  {formattedDateTime}
+                </div>
+              </div>
+
+              <div className="flex flex-wrap">
+                {summary?.map((itm, index) => (
+                  <div
+                    className="w-full relative items-center lg:w-6/12 xl:w-6/12 p-2"
+                    key={index}
+                  >
+                    <div className="bg-white dark:bg-slate-900 shadow-lg rounded-lg p-4 space-y-4">
+                      <div>
+                        <div className=" w-full text-gray-600 dark:text-slate-300 text-xs text-end">
+                          {itm.detail}
+                        </div>
+                        <div className="text-gray-600 dark:text-slate-300 text-md font-semibold text-end">
+                          {itm.value}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="absolute top-[-5%] left-[1%]">
+                      <div className="text-white p-2 text-center inline-flex items-center justify-center w-8 h-8 shadow-lg rounded-full bg-green-900">
+                        <Image src={images[index]} alt={`Image ${index}`} />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="p-3 grid-cols-12 rounded bg-white dark:bg-slate-800 col-span-12">
+              <TabWithContent />
+            </div>
+            <div className="p-3 grid-cols-12 rounded bg-white dark:bg-slate-800 col-span-12">
+              <TopTabWithContent />
+            </div>
+          </div>
+        </div>
+
+        <div className="p-3 text-center rounded md:col-span-4 col-span-12 ">
+          <div className="grid-cols-12 hidden md:block rounded bg-white dark:bg-slate-800 col-span-12">
+            <div className="flex w-full items-center justify-between">
+              <div className="p-3 text-gray-600 dark:text-slate-300 mb-2 font-semibold text-lg">
+                Summary
+              </div>
+              <div className="text-sm text-gray-400 mr-2 ">
+                {formattedDateTime}
+              </div>
+            </div>
+
+            <div className="flex flex-wrap">
+              {summary?.map((itm, index) => (
+                <div
+                  className="w-full relative items-center lg:w-6/12 xl:w-6/12 p-2"
+                  key={index}
+                >
+                  <div className="bg-white dark:bg-slate-900 shadow-lg rounded-lg p-4 space-y-4">
+                    <div>
+                      <div className=" w-full text-gray-600 dark:text-slate-300 text-xs text-end">
+                        {itm.detail}
+                      </div>
+                      <div className="text-gray-600 dark:text-slate-300 text-md font-semibold text-end">
+                        {itm.value}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="absolute top-[-5%] left-[1%]">
+                    <div className="text-white p-2 text-center inline-flex items-center justify-center w-8 h-8 shadow-lg rounded-full bg-green-900">
+                      <Image src={images[index]} alt={`Image ${index}`} />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div className="sticky hidden md:block top-0 bg-white dark:bg-slate-800 h-max mt-2 p-3">
+            <div className="p-3 text-gray-600 dark:text-slate-300 font-semibold text-lg text-start">
+              RECENT NEWS
+            </div>
+            {news?.map((item) => {
+              return (
+                <div>
+                  <a
+                    href="#"
+                    style={{ textAlign: "left" }}
+                    className="block w-full my-2 p-3 align-left bg-slate dark:bg-slate-800 border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700"
+                  >
+                    <h5 className="mb-2 text-l  font-bold tracking-tight text-gray-600 dark:text-slate-300 dark:text-white">
+                      {item.title}
+                    </h5>
+                    <p className="font-normal text-gray-600 dark:text-slate-300">
+                      {item.timeAgo}
+                    </p>
+                  </a>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
-
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-full sm:before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-full sm:after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
+      <div className="grid bg-gray-100 dark:bg-slate-900 grid-cols-12 gap-3">
+        <div className=" w-full p-3 grid-cols-12 rounded col-span-12">
+          <div className="p-3 text-gray-600 dark:text-slate-300 mb-2 font-semibold text-lg">
+            Proposed Dividend
+          </div>
+          <div className="w-full relative h-[400px] overflow-auto shadow-md sm:rounded-lg">
+            <table className="w-full h-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+              <thead className="text-xs sticky top-0 text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+                <tr>
+                  <th scope="col" className="px-6 py-3">
+                    Symbol
+                  </th>
+                  <th scope="col" className="px-6 py-3">
+                    Bonus &#40;%&#41;
+                  </th>
+                  <th scope="col" className="px-6 py-3">
+                    Cash &#40;%&#41;
+                  </th>
+                  <th scope="col" className="px-6 py-3">
+                    Total &#40;%&#41;
+                  </th>
+                  <th scope="col" className="px-6 py-3">
+                    Fiscal Year
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {dividend?.map((item, index) => (
+                  <tr className="odd:bg-white odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
+                    <th
+                      scope="row"
+                      className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                    >
+                      {item.symbol}
+                    </th>
+                    <td className="px-6 py-4">{item.bonus}</td>
+                    <td className="px-6 py-4">{item.cash}</td>
+                    <td className="px-6 py-4">{item.total}</td>
+                    <td className="px-6 py-4">{item.fiscalYear}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
-
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800 hover:dark:bg-opacity-30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{" "}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50 text-balance`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
+      <div className="grid bg-gray-100 dark:bg-slate-900 grid-cols-12 gap-3">
+        <div className=" w-full p-3 grid-cols-12 rounded col-span-12">
+          <div className="p-3 text-gray-600 dark:text-slate-300 font-semibold text-lg">
+            Investment
+          </div>
+          <LongTab />
+        </div>
+        <div className=" w-full block md:hidden p-3 grid-cols-12 rounded col-span-12">
+          <div className="sticky  top-0 bg-white dark:bg-slate-800 h-max mt-2 p-3">
+            <div className="p-3 text-gray-600 dark:text-slate-300 font-semibold text-lg text-start">
+              RECENT NEWS
+            </div>
+            {news?.map((item) => {
+              return (
+                <div>
+                  <a
+                    href="#"
+                    style={{ textAlign: "left" }}
+                    className="block w-full my-2 p-3 align-left bg-slate dark:bg-slate-800 border border-gray-200 rounded-lg shadow hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700"
+                  >
+                    <h5 className="mb-2 text-l  font-bold tracking-tight text-gray-600 dark:text-slate-300 dark:text-white">
+                      {item.title}
+                    </h5>
+                    <p className="font-normal text-gray-600 dark:text-slate-300">
+                      {item.timeAgo}
+                    </p>
+                  </a>
+                </div>
+              );
+            })}
+          </div>
+        </div>
       </div>
     </main>
   );
