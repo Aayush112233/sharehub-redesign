@@ -3,6 +3,7 @@
 import InvestingTable from "@/reusables/InvestingTable";
 import { Dropdown } from "flowbite-react";
 import React, { useState, useEffect } from "react";
+import { useTheme } from "next-themes";
 
 const LongTab = () => {
   const [tabIndex, setIndex] = useState(1);
@@ -14,6 +15,8 @@ const LongTab = () => {
   const [fpo, setFPO] = useState([]);
   const [mutualFunds, setMutualFund] = useState([]);
   const [debenture, setDeventure] = useState([]);
+
+  const { theme, setTheme } = useTheme();
 
   const [dropContent, setDropContent] = useState("");
 
@@ -253,10 +256,11 @@ const LongTab = () => {
             Debenture
           </button>
         </div>
-        <div className="p-2 rounded block col-span-12 md:hidden bg-gray-200 dark:bg-slate-800 ">
-          <Dropdown label={dropContent === "" ? "IPO" : dropContent}>
+        <div className="p-2 rounded block col-span-12 md:hidden bg-gray-100 dark:bg-slate-800 ">
+          <Dropdown label={dropContent === "" ? "IPO" : dropContent} style={theme ==="dark"? {color: 'white', borderColor:"white"} : {color: 'black', borderColor:"gray"}}>
             {TabContent.map((item) => (
               <Dropdown.Item
+              className="text-black dark:text-white"
                 onClick={() => {
                   setIndex(item.ind);
                 }}
