@@ -209,7 +209,7 @@ const Information = () => {
           <CompanyStockCharts />
         </div>
         <div className="p-3 grid-cols-12 rounded bg-white dark:bg-slate-800 md:col-span-4 col-span-12">
-          <div className="p-2 text-gray-600 dark:text-slate-300 font-semibold text-lg">
+          <div className=" mb-2 text-gray-600 dark:text-slate-300 font-semibold text-lg">
             Summary
           </div>
           <div class="px-2 flex flex-col">
@@ -307,7 +307,7 @@ const Information = () => {
           </div>
         </div>
         <div className="p-3 grid-cols-12 rounded bg-white dark:bg-slate-800 col-span-12 md:col-span-4">
-          <div className="p-2 text-gray-600 dark:text-slate-300 font-semibold text-lg">
+          <div className="mb-2 text-gray-600 dark:text-slate-300 font-semibold text-lg">
             General Information
           </div>
           <div class="px-2 flex flex-col">
@@ -405,7 +405,7 @@ const Information = () => {
           </div>
         </div>
         <div className="p-3 grid-cols-12 rounded bg-white dark:bg-slate-800 col-span-12 md:col-span-5">
-          <div className="p-2 text-gray-600 dark:text-slate-300 font-semibold text-lg">
+          <div className="mb-2 text-gray-600 dark:text-slate-300 font-semibold text-lg">
             Company General Information
           </div>
           <div class="px-2 flex flex-col">
@@ -503,7 +503,7 @@ const Information = () => {
           </div>
         </div>
         <div className="p-3 grid-cols-12 rounded bg-white dark:bg-slate-800 col-span-12 md:col-span-3 sticky h-max top-0 ">
-          <div className="p-2 text-gray-600 dark:text-slate-300 font-semibold text-lg ">
+          <div className="mb-2 text-gray-600 dark:text-slate-300 font-semibold text-lg ">
             Performance Value
           </div>
           <div class="px-2 flex flex-col">

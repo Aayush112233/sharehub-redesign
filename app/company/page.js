@@ -16,10 +16,12 @@ import Dividends from "@/components/companyTab/Dividends";
 import PriceHistory from "@/components/companyTab/PriceHistory";
 import RightShares from "@/components/companyTab/RightShares";
 import { Dropdown } from "flowbite-react";
+import { useTheme } from "next-themes";
 
 export default function Company() {
   const [selectedButton, setSelectedButton] = useState("Information");
   const [currentComponent, setCurrentComponent] = useState(<Information />);
+  const { theme, setTheme } = useTheme();
 
   const buttonList = [
     { name: "Information", icon: <IoIosInformationCircleOutline /> },
@@ -91,7 +93,14 @@ export default function Company() {
             </div>
           </div>
           <div className="p-2 rounded block col-span-12 md:hidden bg-gray-200 dark:bg-slate-800 ">
-            <Dropdown label={selectedButton}>
+            <Dropdown
+              label={selectedButton}
+              style={
+                theme === "dark"
+                  ? { color: "white", borderColor: "white" }
+                  : { color: "black", borderColor: "gray" }
+              }
+            >
               {buttonList.map((item) => (
                 <Dropdown.Item
                   onClick={() => {
