@@ -143,7 +143,7 @@ export default function Home() {
                 ))}
               </div>
             </div>
-            <div className="p-3 grid-cols-12 rounded bg-white dark:bg-slate-800 col-span-12">
+            <div className="p-3 z-[100] grid-cols-12 rounded bg-white dark:bg-slate-800 col-span-12">
               <TabWithContent />
             </div>
             <div className="p-3 grid-cols-12 rounded bg-white dark:bg-slate-800 col-span-12">
