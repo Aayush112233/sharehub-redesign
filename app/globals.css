@@ -54,3 +54,7 @@ body {
 *::-webkit-scrollbar-thumb {
   background-color: #000000;
 }
+
+.bottom-full{
+  bottom:auto !important;
+}

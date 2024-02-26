@@ -72,12 +72,14 @@ const PriceHistory = () => {
       <div class="flex md:flex-row flex-col md:items-center items-start items-start h-fit w-full border-[3px] border-white dark:border-slate-900 justify-between rounded-t-2xl bg-white dark:bg-slate-900 px-4 pt-4 shadow-2xl shadow-gray-100  dark:shadow-none">
         <div className="flex flex-col">
           <div className="text-sm text-gray-500">Select a data range</div>
-
           <div className="border border-gray-400 rounded w-[300px]">
             <Datepicker
               value={value}
               onChange={handleValueChange}
               showShortcuts={true}
+              popperProps={{
+                positionFixed: true // use this to make the popper position: fixed
+              }}
             />
           </div>
         </div>
